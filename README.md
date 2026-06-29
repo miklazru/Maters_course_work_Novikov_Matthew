@@ -41,7 +41,7 @@
 
 ### 📊 Стратегический слой — LLM-Аналитик
 
-- Автономный модуль `llm_analyst.py` на базе Gemini API
+- Автономный модуль `llm_analyst.py` на базе локально развёрнутой модели **Qwen2.5-3B-Instruct** (GGUF, через llama.cpp)
 - Генерация инженерных отчётов в Markdown с рекомендациями по изменению порогов управления
 
 ---
@@ -49,20 +49,34 @@
 ## Структура репозитория
 
 ```
-sbercity-bess-rl-llm/
-├── envs/
-│   └── battery_env.py          # Кастомная среда Gymnasium
-├── agents/
-│   ├── rule_based.py           # Базовые эвристические стратегии
-│   └── sac_train.py            # Обучение Soft Actor-Critic
-├── llm_control/
-│   ├── start_qwen_server.sh    # Запуск локального Qwen2.5-3B сервера
-│   ├── hierarchical_agent.py   # Гибридный контроллер (SAC + LLM Masking)
-│   └── llm_analyst.py          # Стратегический аналитик (Gemini API)
-├── notebooks/
-│   └── Calce_UMD_3.ipynb       # Финальный ноутбук с экспериментами
-├── data/
-│   └── calce_profiles.json     # Эмпирические данные деградации
+kursach/
+├── CityLearn/                          # Прототип на базе CityLearn + Q-Learning
+│   ├── llm_server/
+│   │   └── llm_server_bash_script.sh   # Запуск локального Qwen2.5-3B сервера
+│   ├── BatteryEnvironment.py           # Ранняя версия среды Gymnasium
+│   ├── CityLearn_test.ipynb            # Тестирование CityLearn-интеграции
+│   ├── QLearningClass.py               # Реализация Q-Learning агента
+│   ├── QLearning_vs_ruleBased.ipynb    # Сравнение Q-Learning и Rule-Based
+│   └── requirements.txt
+│
+├── calce_umd_dataset/                  # Основной модуль проекта (CALCE + SAC + LLM)
+│   ├── llm_server/
+│   │   └── llm_server_bash_script.sh   # Запуск локального Qwen2.5-3B сервера
+│   ├── CS2_33/ CS2_34/ CS2_35/ CS2_36/ # Сырые данные батарей CALCE UMD
+│   ├── BatteryEnvironment.py           # Финальная кастомная среда Gymnasium
+│   ├── llm_coordinator.py              # Тактический LLM-координатор (SAC + маскирование)
+│   ├── llm_analyst.py                  # Стратегический LLM-аналитик (Gemini API)
+│   ├── Calce_UMD_3.ipynb              # Финальный ноутбук с экспериментами
+│   ├── sac_battery_model.zip           # Обученная модель SAC (single battery)
+│   ├── sac_multi_battery_model.zip     # Обученная модель SAC (multi battery)
+│   ├── ppo_battery_model.zip           # Обученная модель PPO
+│   ├── ocv_lut.csv                     # Look-up table OCV-SOC
+│   ├── full_battery_data_final.csv     # Финальный датасет деградации
+│   ├── degradation_model.json          # Параметры модели деградации SOH
+│   └── requirements.txt
+│
+├── datasets/                           # Вспомогательные датасеты
+├── test_datsets.ipynb                  # Разведочный анализ данных
 └── README.md
 ```
 
@@ -128,7 +142,7 @@ Hierarchical SAC + LLM       +41.95   ✅ + защита SOH без потери
 ## Авторы
 
 **Новиков Матвей Андреевич** — исследование среды BESS, обучение RL-моделей, интеграция LLM-координатора  
-**Хасянов Руфат** — разработка смежной инфраструктуры
+**Хасянов Руфат** — Коллега, разрабатывает параллельно свой проект по управлению ситуации внутри батареи
 
 **Научные руководители:** Васильев С.П., Дружинин А.
 
